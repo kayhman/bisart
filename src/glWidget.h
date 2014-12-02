@@ -43,7 +43,7 @@
 
 #include <QtOpenGL/QGLWidget>
 
-//class QtLogo;
+class QtLogo;
 
 class GLWidget : public QGLWidget
 {
@@ -74,7 +74,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    //QtLogo *logo;
+    QtLogo *logo;
     int xRot;
     int yRot;
     int zRot;
