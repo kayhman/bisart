@@ -13,7 +13,7 @@ find_package(Qt5OpenGL)
 find_package(OpenGL)
 
 # Tell CMake to create the helloworld executable
-add_executable(helloworld src/glWidget.cpp src/window.cpp src/main.cpp src/qtlogo.cpp)
+add_executable(helloworld src/glWidget.cpp src/window.cpp src/main.cpp)
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(helloworld Qt5::Widgets Qt5::OpenGL ${OPENGL_LIBRARIES})

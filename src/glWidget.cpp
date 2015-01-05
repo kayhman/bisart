@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "glWidget.h"
-//#include "qtlogo.h"
 
 #include <GL/glut.h>    // Header File For The GLUT Library 
 
@@ -15,7 +14,6 @@
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
-    logo = 0;
     xRot = 0;
     yRot = 0;
     zRot = 0;
@@ -80,15 +78,12 @@ void GLWidget::initializeGL()
 {
     qglClearColor(qtPurple.dark());
 
-    //logo = new QtLogo(this, 64);
-    //logo->setColor(qtGreen.dark());
-
-    //glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
-    //glShadeModel(GL_SMOOTH);
-    //glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
-    //glEnable(GL_MULTISAMPLE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_MULTISAMPLE);
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
@@ -99,15 +94,21 @@ void GLWidget::paintGL()
     glLoadIdentity();
     glTranslatef(0, 0.0, -4.0);
 
+    glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
+    glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
+    glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
+
     glBegin(GL_TRIANGLES);                      // Drawing Using Triangles
     glVertex3f( 0.0f, 1.0f, 0.0f);              // Top
     glVertex3f(-1.0f,-1.0f, 0.0f);              // Bottom Left
     glVertex3f( 1.0f,-1.0f, 0.0f);              // Bottom Right
+
+    //back side
+    glVertex3f( 0.0f, 1.0f, 0.0f);              // Top
+    glVertex3f( 1.0f,-1.0f, 0.0f);              // Bottom Right
+    glVertex3f(-1.0f,-1.0f, 0.0f);              // Bottom Left
     glEnd();  
-    //glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
-    //glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
-    //glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
-    //logo->draw();
+
 }
 
 void GLWidget::resizeGL(int width, int height)
@@ -119,11 +120,6 @@ void GLWidget::resizeGL(int width, int height)
     glLoadIdentity();
     gluPerspective(45.0f,(GLfloat)width/(GLfloat)height,0.1f,100.0f);
 
-    //#ifdef QT_OPENGL_ES_1
-    //glOrthof(-0.5, +0.5, -0.5, +0.5, 4.0, 15.0);
-    //#else
-    //glOrtho(-0.5, +0.5, -0.5, +0.5, 4.0, 15.0);
-    //#endif
     glMatrixMode(GL_MODELVIEW);
 }
 
