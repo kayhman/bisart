@@ -2,18 +2,26 @@
 #include <QQmlApplicationEngine>
 #include <QQuickView>
 #include <QUrl>
+//#include <QGuiApplication>
+
+
+#include "glScene.h"
+
 
 int main(int argc, char *argv[])
 {
-  QApplication app(argc, argv);
+  QGuiApplication app(argc, argv);
+
+  qmlRegisterType<GlScene>("IsartOpenGL", 1, 0, "GlScene");
+
   
   //QQmlApplicationEngine engine;
   //engine.load("main.qml");
 
-  QQuickView* view = new QQuickView();
-  QUrl source = QUrl::fromLocalFile("main.qml");
-  view->setSource(source);
-  view->show();
+  QQuickView view;
+  QUrl source = QUrl::fromLocalFile("mainGl.qml");
+  view.setSource(source);
+  view.show();
   
   return app.exec();
 }
