@@ -41,10 +41,12 @@ void GlScene::cleanup()
 
 void GlScene::sync()
 {
+  //safely update renderer
     if (!m_renderer) {
         m_renderer = new GlSceneRenderer();
         connect(window(), SIGNAL(beforeRendering()), m_renderer, SLOT(paint()), Qt::DirectConnection);
     }
     m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
     m_renderer->setT(m_t);
+    m_renderer->resize();
 }
