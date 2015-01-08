@@ -1,0 +1,28 @@
+Cours Isart
+-----------
+
+
+* Présentation GS
+* Présentation projet
+** Specs :
+*** Editeur de jeux
+*** Ambitieux : Qt + OpenGL + scripting (+ multiplateforme ?)
+
+* Présentation Qt
+** Plus qu'une librairie graphique
+** Moc
+** Signaux -> javascript
+** environnement de dev : qtCreator
+** Deux modes de dév : QWidget ou QML
+
+* Exemple de code
+** Exemple classique
+** Exemple qtCreator
+** Exemple QML
+** Système de build -> Cmake (multiplateforme, ...)
+
+
+* Scripting
+** Lua ?
+** ecl !!
+** swig -> python, ...
