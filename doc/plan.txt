@@ -14,6 +14,13 @@ Cours Isart
 ** Signaux -> javascript
 ** environnement de dev : qtCreator
 ** Deux modes de dév : QWidget ou QML
+** QtCore :
+*** path, json, regexp
+** QtGui :
+*** Widget, QtQuick, ...
+** QtNetwork : Socket, ssl, ...
+** QtQML
+** QtQuick : Basé sur OpenGL framework
 
 * Exemple de code
 ** Exemple classique
