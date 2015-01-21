@@ -15,12 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     qconsole.cpp \
-    glWidget.cpp
+    glWidget.cpp \
+    parser.cpp
 
 HEADERS  += mainwindow.h \
     qconsole.h \
     glWidget.h \
-    singleton.h
+    singleton.h \
+    parser.h
 
 FORMS    += mainwindow.ui
 

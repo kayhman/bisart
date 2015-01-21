@@ -23,6 +23,9 @@ signals:
     void yRotationChanged(int angle);
     void zRotationChanged(int angle);
 
+public:
+    void move(const std::string& id, float x, float y, float z);
+
 protected:
     void initializeGL();
     void paintGL();
@@ -36,6 +39,14 @@ private:
     int xRot;
     int yRot;
     int zRot;
+
+    float xTrans;
+    float yTrans;
+    float zTrans;
+
+    std::vector<float> vertices;
+    std::vector<int> triangles;
+
     QPoint lastPos;
     QColor qtGreen;
     QColor qtPurple;

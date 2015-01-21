@@ -6,6 +6,7 @@
 #include <sstream>
 #include <fstream>
 #include "singleton.h"
+#include "glWidget.h"
 
 extern "C" {
     #include "lua.h"
@@ -46,6 +47,8 @@ int QConsole::moveX(lua_State* L)
     float z = atof(lua_tostring(L, 4));
 
     std::cout << "moving " << mesh << " to " << x << " " << y << " " << z << std::endl;
+
+    Singleton<GLWidget>::getInstance()->move(mesh, x, y,z);
 
     return 0;
 }

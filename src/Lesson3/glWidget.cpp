@@ -2,10 +2,14 @@
 #include <QtOpenGL/QtOpenGL>
 
 #include <math.h>
-
+#include <iostream>
 #include "glWidget.h"
 
 #include <GL/glut.h>    // Header File For The GLUT Library 
+#include <iostream>
+#include "parser.h"
+
+#include <QVector3D>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -14,7 +18,8 @@
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
       m_t(0.),
-    m_program(NULL)
+    m_program(NULL),
+    xTrans(0),yTrans(0),zTrans(0)
 {
     xRot = 0;
     yRot = 0;
@@ -22,6 +27,9 @@ GLWidget::GLWidget(QWidget *parent)
 
     qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
     qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
+
+    ObjParser::load("/tmp/bunny.obj", vertices, triangles);
+
 }
 
 GLWidget::~GLWidget()
@@ -45,6 +53,15 @@ static void qNormalizeAngle(int &angle)
     while (angle > 360 * 16)
         angle -= 360 * 16;
 }
+
+void GLWidget::move(const std::string& id, float x, float y, float z)
+{
+    xTrans = x;
+    yTrans = y;
+    zTrans = z;
+    this->updateGL();
+}
+
 
 void GLWidget::setXRotation(int angle)
 {
@@ -132,9 +149,6 @@ void GLWidget::paintShader()
 
 void GLWidget::paintGL()
 {
-    paintShader();
-    return;
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glTranslatef(0, 0.0, -4.0);
@@ -143,7 +157,31 @@ void GLWidget::paintGL()
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
 
+    glTranslatef(xTrans, yTrans, zTrans);
+
     glBegin(GL_TRIANGLES);                      // Drawing Using Triangles
+    for(int tIdx = 0 ; tIdx < triangles.size() ; tIdx+=3)
+    {
+        int A = triangles[tIdx];
+        int B = triangles[tIdx+1];
+        int C = triangles[tIdx+2];
+
+        QVector3D AB(vertices[3*B+0]-vertices[3*A+0], vertices[3*B+1]-vertices[3*A+1], vertices[3*B+2]-vertices[3*A+2]);
+        QVector3D AC(vertices[3*C+0]-vertices[3*A+0], vertices[3*C+1]-vertices[3*A+1], vertices[3*C+2]-vertices[3*A+2]);
+        QVector3D n = QVector3D::crossProduct(AB,AC);
+        n.normalize();
+
+        glNormal3f(n.x(), n.y(),n.z());
+        glVertex3f(vertices[3*A+0], vertices[3*A+1], vertices[3*A+2]);
+        glVertex3f(vertices[3*B+0], vertices[3*B+1], vertices[3*B+2]);
+        glVertex3f(vertices[3*C+0], vertices[3*C+1], vertices[3*C+2]);
+
+        glVertex3f(vertices[3*A+0], vertices[3*A+1], vertices[3*A+2]);
+        glVertex3f(vertices[3*C+0], vertices[3*C+1], vertices[3*C+2]);
+        glVertex3f(vertices[3*B+0], vertices[3*B+1], vertices[3*B+2]);
+
+    }
+    /*
     glVertex3f( 0.0f, 1.0f, 0.0f);              // Top
     glVertex3f(-1.0f,-1.0f, 0.0f);              // Bottom Left
     glVertex3f( 1.0f,-1.0f, 0.0f);              // Bottom Right
@@ -152,7 +190,8 @@ void GLWidget::paintGL()
     glVertex3f( 0.0f, 1.0f, 0.0f);              // Top
     glVertex3f( 1.0f,-1.0f, 0.0f);              // Bottom Right
     glVertex3f(-1.0f,-1.0f, 0.0f);              // Bottom Left
-    glEnd();  
+    */
+    glEnd();
 
 }
 
