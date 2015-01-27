@@ -1,11 +1,13 @@
 #ifndef MESH_H
 #define MESH_H
 #include <QVector3D>
+#include <QtOpenGL/QtOpenGL>
+
 
 class Mesh
 {
 private:
-    std::vector<int> indices;
+    std::vector<GLint> indices;
     std::vector<float> vertices;
     QVector3D position;
 
@@ -15,8 +17,8 @@ public:
     static Mesh* createMeshFromObj(const std::string& file );
     void render();
 
-    std::vector<int>& getIndices();
-    std::vector<float>& getVertices();
+    std::vector<GLint>& getIndices();
+    std::vector<GLfloat>& getVertices();
     QVector3D& getPosition();
 
 };

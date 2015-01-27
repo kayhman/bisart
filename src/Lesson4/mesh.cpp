@@ -23,10 +23,10 @@ Mesh* Mesh::createMeshFromObj(const std::string& file )
 
 void Mesh::render()
 {
-    glTranslatef(position.x(), position.y(), position.z());
     std::cout << "bunny pos " << position.x() << std::endl;
     glBegin(GL_TRIANGLES);                      // Drawing Using indices
-    for(int tIdx = 0 ; tIdx < indices.size() ; tIdx+=3)
+    std::vector<QVector3D> normals;
+    for(int tIdx = 0 ; tIdx < (int)indices.size() ; tIdx+=3)
     {
         int A = indices[tIdx];
         int B = indices[tIdx+1];
@@ -36,6 +36,7 @@ void Mesh::render()
         QVector3D AC(vertices[3*C+0]-vertices[3*A+0], vertices[3*C+1]-vertices[3*A+1], vertices[3*C+2]-vertices[3*A+2]);
         QVector3D n = QVector3D::crossProduct(AB,AC);
         n.normalize();
+//        normals.push_back(n);
 
         glNormal3f(n.x(), n.y(),n.z());
         glVertex3f(vertices[3*A+0], vertices[3*A+1], vertices[3*A+2]);
@@ -48,36 +49,35 @@ void Mesh::render()
 
     }
     glEnd();
+    return;
+
+    //glBegin(GL_TRIANGLES);                      // Drawing Using indices
+    //glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    //glNormalPointer(GL_FLOAT, 3 * sizeof(GLfloat), normals.data());
+    glVertexPointer(3, GL_FLOAT, 0, this->vertices.data());
+
+    glPushMatrix();
+      glTranslatef(position.x(), position.y(), position.z());
+
+      //glScalef(0.05f, 0.05f, 0.05f);
+      //glColor3f(1,1,1);
+
+      glDrawElements(GL_TRIANGLES, this->indices.size()/3, GL_INT, this->indices.data());
+
+    glPopMatrix();
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    //glDisableClientState(GL_NORMAL_ARRAY);
+    glEnd();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-std::vector<int>& Mesh::getIndices()
+std::vector<GLint>& Mesh::getIndices()
 {
     return indices;
 }
-std::vector<float>& Mesh::getVertices()
+std::vector<GLfloat>& Mesh::getVertices()
 {
     return vertices;
 }

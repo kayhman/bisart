@@ -97,7 +97,6 @@ void QConsole::keyPressEvent(QKeyEvent *event)
          txt = QString("res: ") + cmd;
          this->execCommand(cmd);
          addHistoryEntry(cmd);
-
          this->appendPlainText("");
         break;
     case Qt::Key_Backspace:
