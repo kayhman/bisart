@@ -123,46 +123,6 @@ void GLWidget::initializeGL()
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
-void GLWidget::paintShader()
-{
-    if (!m_program) {
-        m_program = new QOpenGLShaderProgram();
-        m_program->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                           "attribute highp vec4 vertices;"
-                                           "varying highp vec3 coords;"
-                                           "void main() {"
-                                           "    gl_Position = vertices;"
-                                           "    float perspective_factor = gl_Position.z * 0.5 + 1.0;"
-                                           "    gl_Position.x = gl_Position.x/perspective_factor;"
-                                           "    gl_Position.y = gl_Position.y/perspective_factor;"
-                       "    coords.xy =  vertices.xy;"
-                                           "}");
-        m_program->bindAttributeLocation("vertices", 0);
-        m_program->link();
-
-    }
-    m_program->bind();
-
-    m_program->enableAttributeArray(0);
-
-    float values[] = {
-      -0.8f, -0.8f, -m_t,
-      0.8f, -0.8f, -m_t,
-      -0.8f, 0.8f, -m_t,
-        0.8f, 0.8f, -m_t
-    };
-    m_program->setAttributeArray(0, GL_FLOAT, values, 3);
-    m_program->setUniformValue("t", (float) m_t);
-
-    //glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
-
-    m_program->disableAttributeArray(0);
-    m_program->release();
-}
-
 void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
