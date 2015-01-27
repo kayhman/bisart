@@ -19,7 +19,7 @@
      <widget class="GLWidget" name="glWidget" native="true"/>
     </item>
     <item row="1" column="0">
-     <widget class="QConsole" name="widget" native="true">
+     <widget class="QConsole" name="qConsole" native="true">
       <property name="maximumSize">
        <size>
         <width>16777215</width>

@@ -32,7 +32,6 @@ protected:
     void historyDown();
     void execCommand(const QString cmd);
     lua_State* L;
-    static std::string bubuf;
 };
 
 #endif // QCONSOLE_H

@@ -14,17 +14,6 @@ extern "C" {
     #include "lualib.h"
 }
 
-static int l_my_log(lua_State* L) {
-    int nargs = lua_gettop(L);
-    std::ofstream ss("log.txt", std::ios::app);
-    for (int i=1; i <= nargs; ++i) {
-        ss << lua_tostring(L, i);
-    }
-
-    return 0;
-}
-
-std::string QConsole::bubuf = "";
 
 int QConsole::myPrint(lua_State* L)
 {
@@ -33,14 +22,13 @@ int QConsole::myPrint(lua_State* L)
     for (int i=1; i <= nargs; ++i) {
         ss << lua_tostring(L, i);
     }
-    QConsole::bubuf = ss.str();
+    Singleton<QConsole>::getInstance()->appendPlainText(QString(ss.str().c_str()));
     return 0;
 }
 
 int QConsole::moveX(lua_State* L)
 {
     std::stringstream ss;
-    int nargs = lua_gettop(L);
     std::string mesh = lua_tostring(L, 1);
     float x = atof(lua_tostring(L, 2));
     float y = atof(lua_tostring(L, 3));
@@ -56,7 +44,6 @@ int QConsole::moveX(lua_State* L)
 int QConsole::addMesh(lua_State* L)
 {
     std::stringstream ss;
-    int nargs = lua_gettop(L);
     std::string mesh = lua_tostring(L, 1);
     std::string file = lua_tostring(L, 2);
 
@@ -89,12 +76,12 @@ QConsole::~QConsole()
         lua_close(L);
 }
 
-void QConsole::mousePressEvent(QMouseEvent * event)
+void QConsole::mousePressEvent(QMouseEvent * )
 {
     return;
 }
 
-void QConsole::mouseReleaseEvent(QMouseEvent * event)
+void QConsole::mouseReleaseEvent(QMouseEvent *)
 {
     return;
 }
@@ -111,8 +98,6 @@ void QConsole::keyPressEvent(QKeyEvent *event)
          this->execCommand(cmd);
          addHistoryEntry(cmd);
 
-         this->appendPlainText(QString(bubuf.c_str()));
-         bubuf="";
          this->appendPlainText("");
         break;
     case Qt::Key_Backspace:
@@ -171,7 +156,7 @@ void QConsole::historyDown()
         return;
     this->removeCurrentLine();
 
-    if(this->hIndex < this->history.size()-1)
+    if(this->hIndex < ((int)this->history.size())-1)
         this->hIndex++;
     QString cmd = this->history[hIndex];
     this->insertPlainText(cmd);

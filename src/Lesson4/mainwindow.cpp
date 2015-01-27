@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     Singleton<GLWidget>::createInstance(ui->glWidget);
+    Singleton<QConsole>::createInstance(ui->qConsole);
+
 }
 
 MainWindow::~MainWindow()
