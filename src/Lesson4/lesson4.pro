@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = cxonsole
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -28,8 +29,13 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-INCLUDEPATH += deps/include
-INCLUDEPATH += freeglut/include/
+#INCLUDEPATH += deps/include
+#INCLUDEPATH += freeglut/include/
 
-LIBS += ../cxonsole/deps/lua52.lib
-LIBS += ../cxonsole/freeglut/lib/freeglut.lib
+#LIBS += ../cxonsole/deps/lua52.lib
+#LIBS += ../cxonsole/freeglut/lib/freeglut.lib
+
+INCLUDEPATH += /usr/include/lua5.2
+
+LIBS += -llua5.2
+LIBS += -lGLU
