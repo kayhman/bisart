@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "singleton.h"
 #include <QList>
-#include "Mesh.h"
+#include "mesh.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :

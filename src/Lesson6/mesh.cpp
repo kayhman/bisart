@@ -40,6 +40,7 @@ void Mesh::addChild(const std::string& name, Mesh* mesh)
     mesh->parent = this;
     children[name] = mesh;
     mesh->getItem()->setText(0, name.c_str());
+    mesh->getItem()->setFlags(mesh->getItem()->flags() | Qt::ItemIsEditable);
     item->addChild(mesh->getItem());
 }
 
@@ -48,8 +49,8 @@ void Mesh::removeChild(const std::string& name)
     auto child = this->children.find(name);
     if(child != this->children.end())
     {
+        //delete child->second;
         this->children.erase(name);
-        delete child->second;
     }
 }
 
@@ -75,7 +76,6 @@ std::string Mesh::getUniqueName()
 
 void Mesh::render()
 {
-    std::cout << "bunny pos " << position.x() << std::endl;
     glPushMatrix();
     glTranslatef(position.x(), position.y(), position.z());
 

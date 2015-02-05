@@ -25,7 +25,7 @@ public slots:
     void setZRotation(int angle);
     void showMenu(const QPoint& globalPos);
     void remove();
-
+    void addMesh();
 signals:
     void xRotationChanged(int angle);
     void yRotationChanged(int angle);

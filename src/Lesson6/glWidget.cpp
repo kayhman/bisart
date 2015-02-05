@@ -12,6 +12,10 @@
 #include <QVector3D>
 #include "mesh.h"
 #include <QWidgetItem>
+#include <QFileDialog>
+
+Q_DECLARE_METATYPE(QTreeWidgetItem*)
+
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -44,30 +48,58 @@ void GLWidget::remove()
     QAction* action = qobject_cast<QAction*>(sender);
     if(action)
     {
-        Mesh* m = action->data().value<Mesh*>();
-        if(m->getParent())
-            m->getParent()->removeChild(m->getName());
-        std::cout << "remove " << dynamic_cast<Mesh*>(m)->getUniqueName() << std::endl;
-    }
+        QTreeWidgetItem* item = action->data().value<QTreeWidgetItem*>();
+        Mesh* m = item->data(0, Qt::UserRole).value<Mesh*>();
 
+        if(m->getParent())
+        {
+            m->getParent()->removeChild(m->getName());
+            delete item;//->parent()->removeChild(item);
+        }
+        else
+        {
+            this->meshes.erase(m->getName());
+            delete item;
+        }
+
+    }
+    this->updateGL();
+}
+
+void GLWidget::addMesh()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+         tr("Open Mesh"), "", tr("Mesh Files (*.obj)"));
+    QObject* sender = QObject::sender();
+    QAction* action = qobject_cast<QAction*>(sender);
+    if(action)
+    {
+        Mesh* m = action->data().value<Mesh*>();
+        Mesh* newM = this->addMesh("bunny", fileName.toStdString(), m);
+        newM->getPosition().setX(1.0);
+    }
 }
 
 void GLWidget::showMenu(const QPoint& globalPos)
 {
      QTreeWidgetItem* item =  this->treeWidget->itemAt(globalPos);
      QMenu menu;
-     std::cout << "menu " << globalPos.x() << std::endl;
 
      QAction* remove = new QAction(tr("Remove mesh"), this);
+     QAction* add = new QAction(tr("Add mesh"), this);
+
      remove->setStatusTip(tr("Remove mesh"));
+     add->setStatusTip(tr("Add mesh"));
 
+     remove->setData(QVariant::fromValue<QTreeWidgetItem*>(item));
+     add->setData(QVariant::fromValue<Mesh*>(item->data(0, Qt::UserRole).value<Mesh*>()));
 
-     remove->setData(QVariant::fromValue<Mesh*>(item->data(0, Qt::UserRole).value<Mesh*>() ));
      connect(remove, SIGNAL(triggered()), this, SLOT(remove()));
+     connect(add, SIGNAL(triggered()), this, SLOT(addMesh()));
 
      menu.addAction(remove);
 
-     menu.addAction("Add child");
+     menu.addAction(add);
 
      menu.exec(this->treeWidget->viewport()->mapToGlobal(globalPos));
 }
@@ -86,6 +118,7 @@ Mesh* GLWidget::addMesh(const std::string& name, const std::string& file, Mesh* 
         if(this->treeWidget && m != NULL)
         {
             m->getItem()->setText(0, name.c_str());
+            m->getItem()->setFlags(m->getItem()->flags() | Qt::ItemIsEditable);
             this->treeWidget->addTopLevelItem(m->getItem());
         }
     }
@@ -119,7 +152,6 @@ static void qNormalizeAngle(int &angle)
 
 void GLWidget::move(const std::string& id, float x, float y, float z)
 {
-    std::cout << "move " << this->meshes[id] << std::endl;
     this->meshes[id]->getPosition().setX(x);
     this->meshes[id]->getPosition().setY(y);
     this->meshes[id]->getPosition().setZ(z);
@@ -225,12 +257,13 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int width, int height)
 {
-    int side = qMin(width, height);
+    std::cout << "resize" << std::endl;
+    int side = qMax(width, height);
     glViewport((width - side) / 2, (height - side) / 2, side, side);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0f,(GLfloat)width/(GLfloat)height,0.1f,100.0f);
+    gluPerspective(60.0f,(GLfloat)width/(GLfloat)height,0.1f,100.0f);
 
     glMatrixMode(GL_MODELVIEW);
 }
